@@ -36,6 +36,8 @@ void m6_engine_create(struct m6_engine_parameters* parameters, struct m6_engine*
             break;
         }
     }
+
+	engine->ip = pmem[0xFFFE] << 8ULL | pmem[0xFFFF];
 }
 
 void m6_engine_destroy(struct m6_engine* engine) {

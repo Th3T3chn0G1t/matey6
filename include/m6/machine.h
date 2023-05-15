@@ -9,15 +9,13 @@
 
 #define M6_UNSEGMENTED_MAX 0xFFFF
 
-#define M6_REGULAR_REGISTER_COUNT 8
-
 typedef uint16_t m6_word_t;
 
 enum m6_pmem_mode {
     M6_HIGHER_HALF_BINARY
 };
 
-enum m6_register_descriminator_16 {
+enum m6_regular_register_descriminator_16 {
     M6_AX,
     M6_CX,
     M6_DX,
@@ -28,6 +26,8 @@ enum m6_register_descriminator_16 {
 
     M6_SI,
     M6_DI,
+
+	M6_REGULAR_REGISTER_COUNT
 };
 
 // NOTE: This MUST reflect the order of m6_register_descriminator_16
@@ -45,8 +45,29 @@ struct m6_regular_registers_named_16 {
 } M6_PACKED;
 
 union m6_regular_registers {
-    m6_word_t registers[M6_REGULAR_REGISTER_COUNT];
-    struct m6_regular_registers_named_16 named;
+	m6_word_t registers[M6_REGULAR_REGISTER_COUNT];
+	struct m6_regular_registers_named_16 named;
+};
+
+enum m6_segment_register_descriminator {
+	M6_ES,
+	M6_CS,
+	M6_SS,
+	M6_DS,
+
+	M6_SEGMENT_REGISTER_COUNT
+};
+
+struct m6_segment_registers_named {
+	m6_word_t es;
+	m6_word_t cs;
+	m6_word_t ss;
+	m6_word_t ds;
+};
+
+union m6_segment_registers {
+	m6_word_t registers[M6_SEGMENT_REGISTER_COUNT];
+	struct m6_segment_registers_named named;
 };
 
 #endif
