@@ -1,4 +1,6 @@
 *.o
+*.bin
+
 src/matey6
 
 .idea/
