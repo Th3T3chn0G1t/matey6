@@ -1,3 +1,16 @@
             matey6
 
+matey6 is an emulator for the Intel 8086 processor. It implements the
+instruction set as-specified by the manual and does NOT emulate an IBM PC style
+execution environment.
 
+To compile matey6, type `make'. An executable will be output
+to src/matey6; to install this executable on your system, type `make install`.
+You may require additional permissions to install software.
+matey6 uses GNU Make implicit rules for
+compilation and linkage - information about variables influencing these rules
+can be found here:
+https://www.gnu.org/software/make/manual/html_node/Catalogue-of-Rules.html
+
+For usage information, consult the `-h' option.
+For licence information, consult the file LICENCE in this directory.
