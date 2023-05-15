@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
 
     if(opts.dump) {
         FILE* dumpf = fopen("test.bin", "w+");
-        if(dumpf) m6_fatal_errno("fopen");
+        if(!dumpf) m6_fatal_errno("fopen");
         size_t written = fwrite(engine.pmem, sizeof(uint8_t), M6_PMEM_SIZE, dumpf);
         if(written < M6_PMEM_SIZE) m6_fatal_errno("fwrite");
         fclose(dumpf);
