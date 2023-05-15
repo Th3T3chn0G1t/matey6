@@ -2,9 +2,10 @@
 // Copyright (C) 2023 Emily "TTG" Banerjee <prs.ttg+matey6@pm.me>
 
 #include "m6/arguments.h"
+#include "m6/engine.h"
 
 int main(int argc, char** argv) {
-    struct m6_opts opts;
+    struct m6_opts opts = { 0 };
     m6_parse_arguments(argc, argv, &opts);
 
     FILE* f = fopen(opts.binary, "r");
@@ -29,5 +30,17 @@ int main(int argc, char** argv) {
     result = fclose(f);
     if(result == EOF) m6_fatal_errno("fclose");
 
+    struct m6_engine_parameters parameters = {
+            .pmem_mode = opts.memory_mode,
+            .binary = buffer,
+            .binary_size = pos,
+            .zero_pmem = opts.zero_pmem
+    };
+    struct m6_engine engine = { 0 };
+    m6_engine_create(&parameters, &engine);
+
+    fwrite(engine.pmem, 1, M6_PMEM_SIZE, fopen("test.bin", "w+"));
+
+    m6_engine_destroy(&engine);
     free(buffer);
 }

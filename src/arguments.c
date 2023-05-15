@@ -10,11 +10,12 @@ static void m6_print_usage(void) {
     puts("-V\tShow version information");
     puts("-v\tUse verbose output");
     puts("");
-    puts("-r\tSpecify ROM file");
+    puts("-r\tSpecify binary image");
+    puts("-z\tZero out memory space");
     puts("-m\tSpecify memory layout type");
     puts(
             "\thigherhalf"
-            "\tPlace ROM image in the higher half of the\n\t"
+            "\tPlace binary image in the higher half of the\n\t"
             "\t\tunsegmented address space"
     );
 }
@@ -39,19 +40,17 @@ static void m6_print_version(void) {
 static enum m6_pmem_mode m6_process_pmem_mode(const char* mode_str) {
     if(!strcmp(mode_str, "higherhalf")) return M6_HIGHER_HALF_BINARY;
 
-    fputs("invalid memory layout type\n", stderr);
-    exit(EXIT_FAILURE);
+    m6_fatal_printf("invalid memory layout type\n", stderr);
 }
 
 void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
-    static const char options[] = "r:m:hvV";
+    static const char options[] = "r:m:hvVz";
 
     int result = 0;
 
     while(result != -1) {
         result = getopt(argc, argv, options);
         switch(result) {
-            default:
             case '?': {
                 m6_print_usage();
                 exit(EXIT_FAILURE);
@@ -74,6 +73,11 @@ void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
 
             case 'r': {
                 opts->binary = optarg;
+                break;
+            }
+
+            case 'z': {
+                opts->zero_pmem = true;
                 break;
             }
 

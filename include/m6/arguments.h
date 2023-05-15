@@ -4,13 +4,12 @@
 #ifndef M6_ARGUMENTS_H
 #define M6_ARGUMENTS_H
 
-enum m6_pmem_mode {
-    M6_HIGHER_HALF_BINARY
-};
+#include "machine.h"
 
 struct m6_opts {
     enum m6_pmem_mode memory_mode;
     char* binary;
+    bool zero_pmem;
 };
 
 void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts);
