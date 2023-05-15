@@ -8,12 +8,19 @@ void m6_fatal_errno(const char* msg) {
     exit(EXIT_FAILURE);
 }
 
+#define M6_FORWARD_VPRINTF(s) \
+    va_list ap; \
+    va_start(ap, fmt); \
+    int result = vfprintf(s, fmt, ap); \
+    if(result < 0) m6_fatal_errno("vprintf"); \
+    va_end(ap);
+
 void m6_verbose_printf(const char* fmt, ...) {
     if(!m6_verbose) return;
+    M6_FORWARD_VPRINTF(stdout)
+}
 
-    va_list ap;
-    va_start(ap, fmt);
-    int result = vprintf(fmt, ap);
-    if(result < 0) m6_fatal_errno("vprinf");
-    va_end(ap);
+void m6_fatal_printf(const char* fmt, ...) {
+    M6_FORWARD_VPRINTF(stderr)
+    exit(EXIT_FAILURE);
 }

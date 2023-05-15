@@ -21,5 +21,6 @@ extern bool m6_verbose;
 
 void m6_fatal_errno(const char* msg);
 void m6_verbose_printf(const char* fmt, ...);
+M6_NORETURN void m6_fatal_printf(const char* fmt, ...);
 
 #endif
