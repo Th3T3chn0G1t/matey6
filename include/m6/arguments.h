@@ -10,6 +10,8 @@ struct m6_opts {
     enum m6_pmem_mode memory_mode;
     char* binary;
     bool zero_pmem;
+
+    char* dump;
 };
 
 void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts);

@@ -10,9 +10,10 @@ static void m6_print_usage(void) {
     puts("-V\tShow version information");
     puts("-v\tUse verbose output");
     puts("");
-    puts("-r\tSpecify binary image");
+    puts("-r file\tSpecify binary image");
     puts("-z\tZero out memory space");
-    puts("-m\tSpecify memory layout type");
+    puts("-D file\tDump memory image on shutdown");
+    puts("-m type\tSpecify memory layout type");
     puts(
             "\thigherhalf"
             "\tPlace binary image in the higher half of the\n\t"
@@ -44,7 +45,7 @@ static enum m6_pmem_mode m6_process_pmem_mode(const char* mode_str) {
 }
 
 void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
-    static const char options[] = "r:m:hvVz";
+    static const char options[] = "r:m:hvVzD:";
 
     int result = 0;
 
@@ -83,6 +84,11 @@ void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
 
             case 'm': {
                 opts->memory_mode = m6_process_pmem_mode(optarg);
+                break;
+            }
+
+            case 'D': {
+                opts->dump = optarg;
                 break;
             }
         }

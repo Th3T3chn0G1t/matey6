@@ -39,7 +39,13 @@ int main(int argc, char** argv) {
     struct m6_engine engine = { 0 };
     m6_engine_create(&parameters, &engine);
 
-    fwrite(engine.pmem, 1, M6_PMEM_SIZE, fopen("test.bin", "w+"));
+    if(opts.dump) {
+        FILE* dumpf = fopen("test.bin", "w+");
+        if(dumpf) m6_fatal_errno("fopen");
+        size_t written = fwrite(engine.pmem, sizeof(uint8_t), M6_PMEM_SIZE, dumpf);
+        if(written < M6_PMEM_SIZE) m6_fatal_errno("fwrite");
+        fclose(dumpf);
+    }
 
     m6_engine_destroy(&engine);
     free(buffer);
