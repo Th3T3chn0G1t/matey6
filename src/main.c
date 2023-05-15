@@ -34,6 +34,8 @@ int main(int argc, char** argv) {
             .pmem_mode = opts.memory_mode,
             .binary = buffer,
             .binary_size = pos,
+			.overwrite_reset_vector = opts.overwrite_reset_vector,
+			.reset_vector = opts.reset_vector,
             .zero_pmem = opts.zero_pmem
     };
     struct m6_engine engine = { 0 };

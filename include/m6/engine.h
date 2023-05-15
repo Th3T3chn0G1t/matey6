@@ -12,6 +12,9 @@ struct m6_engine_parameters {
 
     uint8_t* binary;
     size_t binary_size;
+
+	bool overwrite_reset_vector;
+	m6_word_t reset_vector;
 };
 
 struct m6_engine {

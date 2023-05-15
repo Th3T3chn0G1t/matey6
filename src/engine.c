@@ -37,6 +37,11 @@ void m6_engine_create(struct m6_engine_parameters* parameters, struct m6_engine*
         }
     }
 
+	if(parameters->overwrite_reset_vector) {
+		pmem[0xFFFE] = parameters->reset_vector >> 8ULL;
+		pmem[0xFFFF] = parameters->reset_vector & 0xFF;
+	}
+
 	engine->ip = pmem[0xFFFE] << 8ULL | pmem[0xFFFF];
 }
 

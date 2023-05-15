@@ -12,6 +12,9 @@ struct m6_opts {
     bool zero_pmem;
 
     char* dump;
+
+	bool overwrite_reset_vector;
+	m6_word_t reset_vector;
 };
 
 void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts);

@@ -12,7 +12,8 @@ static void m6_print_usage(void) {
     puts("");
     puts("-r file\tSpecify binary image");
     puts("-z\tZero out memory space");
-    puts("-D file\tDump memory image on shutdown");
+	puts("-D file\tDump memory image on shutdown");
+	puts("-E addr\tOverwrite reset vector address 0xFFFE/F");
     puts("-m type\tSpecify memory layout type");
     puts(
             "\thigherhalf"
@@ -45,7 +46,7 @@ static enum m6_pmem_mode m6_process_pmem_mode(const char* mode_str) {
 }
 
 void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
-    static const char options[] = "r:m:hvVzD:";
+    static const char options[] = "r:m:hvVzD:E:";
 
     int result = 0;
 
@@ -91,6 +92,15 @@ void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
                 opts->dump = optarg;
                 break;
             }
+
+			case 'E': {
+				unsigned long long vector = strtoull(optarg, NULL, 16);
+				if(vector == ULLONG_MAX) m6_fatal_errno("strtoull");
+				if(vector > M6_UNSEGMENTED_MAX) m6_fatal_printf("reset vector out of acceptable range");
+				opts->overwrite_reset_vector = true;
+				opts->reset_vector = vector;
+				break;
+			}
         }
     }
 }
