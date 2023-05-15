@@ -1,0 +1,14 @@
+- use un-`typedef`'d `struct`, `enum` and `union` types
+- use `m6_` prefix
+- use snake_case for variable and function names
+- use SCREAMING_SNAKE_CASE for macros and enum members
+- use `!p` for null testing but `== 0` if the value being checked is numeric
+- out parameters should appear as the last element of the parameter list
+- obey 80 column limit
+- wrap lines artificially only when statements cannot be otherwise decomposed
+- avoid function calls in `if` and `for` conditions
+- allow for single-line `if`, `for` and `while`
+- unbraced `if`, `for` and `while` only allowed on a single-line
+- always place opening brace on the same line as the construct it is attached to
+- single line switch cases are not allowed and must always be braced
+- log strings are not capitalised

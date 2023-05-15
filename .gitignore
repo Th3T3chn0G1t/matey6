@@ -1,0 +1,5 @@
+*.o
+src/matey6
+
+.idea/
+.vscode/
