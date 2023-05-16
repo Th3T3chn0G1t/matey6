@@ -21,11 +21,13 @@ struct m6_engine {
     uint8_t* pmem;
 
     union m6_regular_registers regular_registers;
+    union m6_segment_registers segment_registers;
 
 	m6_word_t ip;
 };
 
 void m6_engine_create(struct m6_engine_parameters* parameters, struct m6_engine* engine);
 void m6_engine_destroy(struct m6_engine* engine);
+void m6_engine_tick(struct m6_engine* engine);
 
 #endif

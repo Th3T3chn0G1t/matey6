@@ -2,6 +2,7 @@
 // Copyright (C) 2023 Emily "TTG" Banerjee <prs.ttg+matey6@pm.me>
 
 #include "m6/engine.h"
+#include "m6/basicops.h"
 
 void m6_engine_create(struct m6_engine_parameters* parameters, struct m6_engine* engine) {
     engine->pmem = malloc(M6_PMEM_SIZE);
@@ -38,13 +39,47 @@ void m6_engine_create(struct m6_engine_parameters* parameters, struct m6_engine*
     }
 
 	if(parameters->overwrite_reset_vector) {
-		pmem[0xFFFE] = parameters->reset_vector >> 8ULL;
-		pmem[0xFFFF] = parameters->reset_vector & 0xFF;
+		pmem[M6_RESET_VECTOR] = parameters->reset_vector >> 8ULL;
+		pmem[M6_RESET_VECTOR + 1] = parameters->reset_vector & 0xFF;
 	}
 
-	engine->ip = pmem[0xFFFE] << 8ULL | pmem[0xFFFF];
+	engine->ip = pmem[M6_RESET_VECTOR] << 8ULL | pmem[M6_RESET_VECTOR + 1];
 }
 
 void m6_engine_destroy(struct m6_engine* engine) {
     free(engine->pmem);
+}
+
+static uint8_t m6_engine_segmented_read(
+        struct m6_engine* engine,
+        m6_word_t segment, m6_word_t offset) {
+
+    return engine->pmem[((segment << 4) + offset) % M6_PMEM_SIZE];
+}
+
+static uint8_t m6_engine_register_segmented_read(
+        struct m6_engine* engine,
+        enum m6_segment_register_descriminator segment, m6_word_t offset) {
+
+    m6_word_t base = engine->segment_registers.registers[segment];
+    return m6_engine_segmented_read(engine, base, offset);
+}
+
+static void m6_engine_process_top_level(struct m6_engine* engine) {
+    uint8_t byte = m6_engine_register_segmented_read(engine, M6_CS, engine->ip);
+
+    uint8_t top = (byte & 0xF0) >> 4;
+    uint8_t middle = (byte & 0xC) >> 2;
+    uint8_t bottom = byte & 0x3;
+    (void) bottom;
+
+    if(top <= 0xF) {
+        if(!(middle & 1)) {
+
+        }
+    }
+}
+
+void m6_engine_tick(struct m6_engine* engine) {
+    m6_engine_process_top_level(engine);
 }

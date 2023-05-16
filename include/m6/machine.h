@@ -9,6 +9,8 @@
 
 #define M6_UNSEGMENTED_MAX 0xFFFF
 
+#define M6_RESET_VECTOR 0xFFFE
+
 typedef uint16_t m6_word_t;
 
 enum m6_pmem_mode {
@@ -63,7 +65,7 @@ struct m6_segment_registers_named {
 	m6_word_t cs;
 	m6_word_t ss;
 	m6_word_t ds;
-};
+} M6_PACKED;
 
 union m6_segment_registers {
 	m6_word_t registers[M6_SEGMENT_REGISTER_COUNT];
