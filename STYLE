@@ -6,6 +6,7 @@
 - out parameters should appear as the last element of the parameter list
 - obey 80 column limit
 - wrap lines artificially only when statements cannot be otherwise decomposed
+    - artificially wrapped lines should be indented twice
 - avoid function calls in `if` and `for` conditions
 - allow for single-line `if`, `for` and `while`
 - unbraced `if`, `for` and `while` only allowed on a single-line
@@ -14,3 +15,7 @@
 - log strings are not capitalised
 - initializer braces should have internal spaces. i.e. `{ 0 }` not `{0}`
 - functions performing operations on an object should take that object first
+- function declarations spanning multiple lines:
+    - should place the parameter list starting from the second line
+    - should have a line break before the function body, if present
+- function signatures should be formatted identically between decl. and impl.
