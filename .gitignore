@@ -3,5 +3,9 @@
 
 src/matey6
 
+reference/
+
 .idea/
 .vscode/
+
+.DS_Store
