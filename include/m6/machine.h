@@ -138,4 +138,16 @@ struct m6_mod_rm_info {
     enum m6_mod mod : 2;
 };
 
+struct m6_flags {
+    bool carry : 1;
+    bool parity : 1;
+    bool auxiliary_carry : 1;
+    bool zero : 1;
+    bool sign : 1;
+    bool overflow : 1;
+    bool interrupt_enable : 1;
+    bool direction : 1;
+    bool trap : 1;
+} M6_PACKED;
+
 #endif

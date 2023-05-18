@@ -23,6 +23,8 @@ struct m6_engine {
     union m6_regular_registers regular_registers;
     union m6_segment_registers segment_registers;
 
+    struct m6_flags flags;
+
 	m6_word_t ip;
 };
 

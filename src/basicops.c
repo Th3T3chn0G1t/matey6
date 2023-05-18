@@ -18,55 +18,146 @@ const m6_basic_op_t m6_basic_ops_table[] = {
 m6_word_t m6_basic_op_add(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
-    (void) engine, (void) a, (void) b;
-    return 0;
+    m6_word_t result = 0;
+    result = a + b;
+
+    /* TODO: Flags
+     * Overflow
+     * Sign
+     * Auxiliary Carry
+     * Parity
+     * Carry
+     */
+
+    if(!result) engine->flags.zero = true;
+    return result;
 }
 
 m6_word_t m6_basic_op_or(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
-    (void) engine, (void) a, (void) b;
-    return 0;
+    engine->flags.overflow = false;
+    engine->flags.carry = false;
+
+    m6_word_t result = 0;
+    result = a | b;
+
+    /* TODO: Flags
+     * Sign
+     * Auxiliary Carry -> Undefined (Replicate 8086 behaviours?)
+     * Parity
+     */
+
+    if(!result) engine->flags.zero = true;
+    return result;
 }
 
 m6_word_t m6_basic_op_adc(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
-    (void) engine, (void) a, (void) b;
-    return 0;
+    m6_word_t result = 0;
+    result = a + b; // TODO: Carry?
+
+    /* TODO: Flags
+     * Overflow
+     * Sign
+     * Auxiliary Carry
+     * Parity
+     * Carry
+     */
+
+    if(!result) engine->flags.zero = true;
+    return result;
 }
 
 m6_word_t m6_basic_op_sbb(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
-    (void) engine, (void) a, (void) b;
-    return 0;
+    m6_word_t result = 0;
+    result = a - b; // TODO: Borrow?
+
+    /* TODO: Flags
+     * Overflow
+     * Sign
+     * Auxiliary Carry
+     * Parity
+     * Carry
+     */
+
+    if(!result) engine->flags.zero = true;
+    return result;
 }
 
 m6_word_t m6_basic_op_and(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
-    (void) engine, (void) a, (void) b;
-    return 0;
+    engine->flags.overflow = false;
+    engine->flags.carry = false;
+
+    m6_word_t result = 0;
+    result = a & b;
+
+    /* TODO: Flags
+     * Sign
+     * Auxiliary Carry -> Undefined (Replicate 8086 behaviours?)
+     * Parity
+     */
+
+    if(!result) engine->flags.zero = true;
+    return result;
 }
 
 m6_word_t m6_basic_op_sub(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
-    (void) engine, (void) a, (void) b;
-    return 0;
+    m6_word_t result = 0;
+    result = a - b;
+
+    /* TODO: Flags
+     * Overflow
+     * Sign
+     * Auxiliary Carry
+     * Parity
+     * Carry
+     */
+
+    if(!result) engine->flags.zero = true;
+    return result;
 }
 
 m6_word_t m6_basic_op_xor(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
-    (void) engine, (void) a, (void) b;
-    return 0;
+    engine->flags.overflow = false;
+    engine->flags.carry = false;
+
+    m6_word_t result = 0;
+    result = a ^ b;
+
+    /* TODO: Flags
+     * Sign
+     * Auxiliary Carry -> Undefined (Replicate 8086 behaviours?)
+     * Parity
+     */
+
+    if(!result) engine->flags.zero = true;
+    return result;
 }
 
 m6_word_t m6_basic_op_cmp(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
-    (void) engine, (void) a, (void) b;
-    return 0;
+    m6_word_t result = 0;
+    result = a - b;
+
+    /* TODO: Flags
+     * Overflow
+     * Sign
+     * Auxiliary Carry
+     * Parity
+     * Carry
+     */
+
+    if(!result) engine->flags.zero = true;
+    return a; // cmp does not affect its changes on machine state
 }
