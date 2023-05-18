@@ -4,7 +4,7 @@
 #include "m6/basicops.h"
 #include "m6/engine.h"
 
-const m6_basic_op_t m6_basic_ops_table[M6_BASIC_OPS_COUNT] = {
+const m6_basic_op_t m6_basic_ops_table[] = {
         [M6_ADD] = m6_basic_op_add,
         [M6_OR] = m6_basic_op_or,
         [M6_ADC] = m6_basic_op_adc,

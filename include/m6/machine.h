@@ -27,9 +27,7 @@ enum m6_regular_register_descriminator_16 {
     M6_BP,
 
     M6_SI,
-    M6_DI,
-
-	M6_REGULAR_REGISTER_COUNT
+    M6_DI
 };
 
 // NOTE: This MUST reflect the order of m6_register_descriminator_16
@@ -47,7 +45,7 @@ struct m6_regular_registers_named_16 {
 } M6_PACKED;
 
 union m6_regular_registers {
-	m6_word_t registers[M6_REGULAR_REGISTER_COUNT];
+	m6_word_t registers[M6_DI + 1];
 	struct m6_regular_registers_named_16 named;
 };
 
@@ -55,9 +53,7 @@ enum m6_segment_register_descriminator {
 	M6_ES,
 	M6_CS,
 	M6_SS,
-	M6_DS,
-
-	M6_SEGMENT_REGISTER_COUNT
+	M6_DS
 };
 
 struct m6_segment_registers_named {
@@ -68,7 +64,7 @@ struct m6_segment_registers_named {
 } M6_PACKED;
 
 union m6_segment_registers {
-	m6_word_t registers[M6_SEGMENT_REGISTER_COUNT];
+	m6_word_t registers[M6_DS + 1];
 	struct m6_segment_registers_named named;
 };
 

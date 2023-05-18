@@ -14,15 +14,13 @@ enum m6_basic_op_type {
     M6_AND,
     M6_SUB,
     M6_XOR,
-    M6_CMP,
-
-    M6_BASIC_OPS_COUNT
+    M6_CMP
 };
 
 typedef m6_word_t (*m6_basic_op_t)(
         struct m6_engine* engine, m6_word_t a, m6_word_t b);
 
-extern const m6_basic_op_t m6_basic_ops_table[M6_BASIC_OPS_COUNT];
+extern const m6_basic_op_t m6_basic_ops_table[M6_CMP + 1];
 
 m6_word_t m6_basic_op_add(
         struct m6_engine* engine, m6_word_t a, m6_word_t b);
