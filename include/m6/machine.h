@@ -12,6 +12,7 @@
 #define M6_RESET_VECTOR 0xFFFE
 
 typedef uint16_t m6_word_t;
+typedef m6_word_t m6_word_pair_t[2];
 
 enum m6_pmem_mode {
     M6_HIGHER_HALF_BINARY
@@ -121,13 +122,15 @@ enum m6_rm_register_address_disp16 {
 };
 
 union m6_rm {
-    enum m6_regular_register_descriminator_8 register8;
-    enum m6_regular_register_descriminator_16 register16;
+    uint8_t rm : 3;
 
-    enum m6_rm_register_address register_address;
-    enum m6_rm_register_address_disp8 register_address_disp8;
-    enum m6_rm_register_address_disp16 register_address_disp16;
-};
+    enum m6_regular_register_descriminator_8 register8 : 3;
+    enum m6_regular_register_descriminator_16 register16 : 3;
+
+    enum m6_rm_register_address register_address : 3;
+    enum m6_rm_register_address_disp8 register_address_disp8 : 3;
+    enum m6_rm_register_address_disp16 register_address_disp16 : 3;
+} M6_PACKED;
 
 struct m6_mod_rm_info {
     uint8_t rm : 3; // union m6_rm

@@ -66,7 +66,7 @@ static uint8_t m6_engine_segmented_read(
     // TODO: There's something awry here % M6_PMEM_SIZE
     uint32_t address = ((base << 4) + offset);
     uint8_t data = engine->pmem[address];
-    printf("read %i @ %x [%x:%x]\n", data, address, base, offset);
+    printf("read %x @ %x [%x:%x]\n", data, address, base, offset);
     return data;
 }
 
@@ -78,54 +78,60 @@ static uint8_t m6_engine_register_segmented_read(
     return m6_engine_segmented_read(engine, base, offset);
 }
 
+static void m6_engine_mod_rm_values(
+        struct m6_engine* engine,
+        bool wide, uint8_t mod_rm, m6_word_pair_t* values, m6_word_t disp) {
+
+    (void) disp;
+
+    struct m6_mod_rm_info mod_rm_info = *(struct m6_mod_rm_info*) &mod_rm;
+    m6_word_t (*registers)[] = &engine->regular_registers.registers;
+    uint8_t rm_value = mod_rm_info.rm;
+    union m6_rm rm = { .rm = rm_value };
+
+    switch(mod_rm_info.mod) {
+        case M6_REGISTER_ADDRESS: {
+
+            break;
+        }
+        case M6_REGISTER_ADDRESS_DISP8: {
+
+            break;
+        }
+        case M6_REGISTER_ADDRESS_DISP16: {
+
+            break;
+        }
+        case M6_REGISTER: {
+            (*values)[0] = (*registers)[mod_rm_info.reg];
+            (*values)[1] = (*registers)[rm.register16];
+
+            if(!wide) {
+                bool hi = rm.register8 >= M6_AH;
+
+                (*values)[0] >>= 8 * hi;
+                (*values)[0] &= 0xFF;
+
+                (*values)[1] >>= 8 * hi;
+                (*values)[1] &= 0xFF;
+            }
+            break;
+        }
+    }
+}
+
 static uint8_t m6_engine_do_basic_mod_rm_op(
         struct m6_engine* engine,
         bool wide, enum m6_basic_op_type op,
         uint8_t mod_rm, m6_word_t operands) {
 
-    struct m6_mod_rm_info mod_rm_info = *(struct m6_mod_rm_info*) &mod_rm;
-
+    (void) op;
     uint8_t stride = 2;
 
-    printf("basic mod_rm (%x) op %d(? %d, ? %d) @ %x ",
-           mod_rm, op, operands & 0xFF, operands >> 8, engine->ip);
+    m6_word_pair_t values;
+    m6_engine_mod_rm_values(engine, wide, mod_rm, &values, operands);
 
-    switch(mod_rm_info.mod) {
-        case M6_REGISTER: {
-            char hi_lo = mod_rm_info.reg >= M6_AH ? (char) 'h' : 'l';
-            // Using int here otherwise clang-tidy has a conniption
-            int bitness = wide ? 'x' : hi_lo;
-            printf(
-                    "register %c%c -> %c%c",
-                    "acdb"[mod_rm_info.reg], bitness,
-                    "acdb"[mod_rm_info.rm], bitness);
-
-            m6_word_t (*registers)[] = &engine->regular_registers.registers;
-            m6_word_t reg = (*registers)[mod_rm_info.reg];
-            m6_word_t rm_reg = (*registers)[mod_rm_info.rm];
-
-            (*registers)[mod_rm_info.reg] = m6_basic_ops_table[op](
-                    engine, reg, rm_reg);
-
-            break;
-        }
-        case M6_REGISTER_ADDRESS: {
-            printf("register_address");
-            break;
-        }
-        case M6_REGISTER_ADDRESS_DISP8: {
-            printf("register_address_disp8");
-            ++stride;
-            break;
-        }
-        case M6_REGISTER_ADDRESS_DISP16: {
-            printf("register_address_disp16");
-            stride += 2;
-            break;
-        }
-    }
-
-    putchar('\n');
+//    m6_word_t result = m6_basic_ops_table[op](engine, values[0], values[1]);
 
     return stride;
 }
