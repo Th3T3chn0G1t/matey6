@@ -3,6 +3,7 @@
 
 #include "m6/engine.h"
 #include "m6/basicops.h"
+
 static uint8_t m6_engine_segmented_read(
         struct m6_engine* engine,
         m6_word_t base, m6_word_t offset);
@@ -14,12 +15,12 @@ void m6_engine_create(
     if(!engine->pmem) m6_fatal_errno("malloc");
     if(parameters->zero_pmem) memset(engine->pmem, 0, M6_PMEM_SIZE);
 
-    static const size_t size_constraints[] = {
-            [M6_HIGHER_HALF_BINARY] = M6_UNSEGMENTED_MAX / 2
+    static const size_t placements[] = {
+            [M6_HIGHER_HALF_BINARY] = 0x8000
     };
 
-    static const size_t placements[] = {
-            [M6_HIGHER_HALF_BINARY] = (M6_UNSEGMENTED_MAX / 2) + 1
+    static const size_t size_constraints[] = {
+            [M6_HIGHER_HALF_BINARY] = 0x8000
     };
 
     size_t size = parameters->binary_size;
@@ -48,7 +49,9 @@ void m6_engine_create(
 		pmem[M6_RESET_VECTOR + 1] = parameters->reset_vector & 0xFF;
 	}
 
-	engine->ip = pmem[M6_RESET_VECTOR] << 8 | pmem[M6_RESET_VECTOR + 1];
+    uint8_t reset_lo = m6_engine_segmented_read(engine, 0, M6_RESET_VECTOR);
+    uint8_t reset_hi = m6_engine_segmented_read(engine, 0, M6_RESET_VECTOR + 1);
+	engine->ip = reset_lo | reset_hi << 8;
     printf("initial IP %x\n", engine->ip);
 }
 
@@ -63,6 +66,7 @@ static uint8_t m6_engine_segmented_read(
     // TODO: There's something awry here % M6_PMEM_SIZE
     uint32_t address = ((base << 4) + offset);
     uint8_t data = engine->pmem[address];
+    printf("read %i @ %x [%x:%x]\n", data, address, base, offset);
     return data;
 }
 
@@ -88,7 +92,9 @@ static uint8_t m6_engine_do_basic_mod_rm_op(
 
     switch(mod_rm_info.mod) {
         case M6_REGISTER: {
-            char bitness = wide ? 'x' : (mod_rm_info.reg >= M6_AH ? 'h' : 'l');
+            char hi_lo = mod_rm_info.reg >= M6_AH ? (char) 'h' : 'l';
+            // Using int here otherwise clang-tidy has a conniption
+            int bitness = wide ? 'x' : hi_lo;
             printf(
                     "register %c%c -> %c%c",
                     "acdb"[mod_rm_info.reg], bitness,

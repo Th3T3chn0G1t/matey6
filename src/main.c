@@ -44,14 +44,14 @@ int main(int argc, char** argv) {
     m6_engine_tick(&engine);
 
     if(opts.dump) {
-        FILE* dumpf = fopen("test.bin", "w+");
-        if(!dumpf) m6_fatal_errno("fopen");
+        FILE* dump = fopen("test.bin", "w+");
+        if(!dump) m6_fatal_errno("fopen");
 
         size_t written = fwrite(
-                engine.pmem, sizeof(uint8_t), M6_PMEM_SIZE, dumpf);
+                engine.pmem, sizeof(uint8_t), M6_PMEM_SIZE, dump);
 
         if(written < M6_PMEM_SIZE) m6_fatal_errno("fwrite");
-        fclose(dumpf);
+        fclose(dump);
     }
 
     m6_engine_destroy(&engine);
