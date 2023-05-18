@@ -30,6 +30,18 @@ enum m6_regular_register_descriminator_16 {
     M6_DI
 };
 
+enum m6_regular_register_descriminator_8 {
+    M6_AL,
+    M6_CL,
+    M6_DL,
+    M6_BL,
+
+    M6_AH,
+    M6_CH,
+    M6_DH,
+    M6_BH
+};
+
 // NOTE: This MUST reflect the order of m6_register_descriminator_16
 struct m6_regular_registers_named_16 {
     m6_word_t ax;
@@ -66,6 +78,61 @@ struct m6_segment_registers_named {
 union m6_segment_registers {
 	m6_word_t registers[M6_DS + 1];
 	struct m6_segment_registers_named named;
+};
+
+enum m6_mod {
+    M6_REGISTER_ADDRESS,
+    M6_REGISTER_ADDRESS_DISP8,
+    M6_REGISTER_ADDRESS_DISP16,
+    M6_REGISTER
+};
+
+enum m6_rm_register_address {
+    M6_ADDRESS_BX_SI,
+    M6_ADDRESS_BX_DI,
+    M6_ADDRESS_BP_SI,
+    M6_ADDRESS_BP_DI,
+    M6_ADDRESS_SI,
+    M6_ADDRESS_DI,
+    M6_ADDRESS_DIRECT,
+    M6_ADDRESS_BX
+};
+
+enum m6_rm_register_address_disp8 {
+    M6_ADDRESS_BX_SI_DISP8,
+    M6_ADDRESS_BX_DI_DISP8,
+    M6_ADDRESS_BP_SI_DISP8,
+    M6_ADDRESS_BP_DI_DISP8,
+    M6_ADDRESS_SI_DISP8,
+    M6_ADDRESS_DI_DISP8,
+    M6_ADDRESS_BP_DISP8,
+    M6_ADDRESS_BX_DISP8
+};
+
+enum m6_rm_register_address_disp16 {
+    M6_ADDRESS_BX_SI_DISP16,
+    M6_ADDRESS_BX_DI_DISP16,
+    M6_ADDRESS_BP_SI_DISP16,
+    M6_ADDRESS_BP_DI_DISP16,
+    M6_ADDRESS_SI_DISP16,
+    M6_ADDRESS_DI_DISP16,
+    M6_ADDRESS_BP_DISP16,
+    M6_ADDRESS_BX_DISP16
+};
+
+union m6_rm {
+    enum m6_regular_register_descriminator_8 register8;
+    enum m6_regular_register_descriminator_16 register16;
+
+    enum m6_rm_register_address register_address;
+    enum m6_rm_register_address_disp8 register_address_disp8;
+    enum m6_rm_register_address_disp16 register_address_disp16;
+};
+
+struct m6_mod_rm_info {
+    uint8_t rm : 3; // union m6_rm
+    uint8_t reg : 3;
+    enum m6_mod mod : 2;
 };
 
 #endif
