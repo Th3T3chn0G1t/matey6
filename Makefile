@@ -8,7 +8,7 @@ CFLAGS += -Iinclude -include m6/common.h
 CFLAGS += -std=c99 -Wall -Wextra -Werror -pedantic -pedantic-errors
  # POSIX.1-2001 Needed for `getopt`
 CFLAGS += -D_POSIX_C_SOURCE=200112L
-CFLAGS += -DM6_VERSION=\"0.0.1\"
+CFLAGS += -DM6_VERSION=\"0.0.1\" $(M6_CFLAGS)
 
 PREFIX ?= /usr/local
 
