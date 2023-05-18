@@ -96,7 +96,9 @@ void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
 			case 'E': {
 				unsigned long long vector = strtoull(optarg, NULL, 16);
 				if(vector == ULLONG_MAX) m6_fatal_errno("strtoull");
-				if(vector > M6_UNSEGMENTED_MAX) m6_fatal_printf("reset vector out of acceptable range");
+				if(vector > M6_UNSEGMENTED_MAX) {
+                    m6_fatal_printf("reset vector out of acceptable range");
+                }
 				opts->overwrite_reset_vector = true;
 				opts->reset_vector = vector;
 				break;

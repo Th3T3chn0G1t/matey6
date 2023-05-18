@@ -4,7 +4,9 @@
 #include "m6/engine.h"
 #include "m6/basicops.h"
 
-void m6_engine_create(struct m6_engine_parameters* parameters, struct m6_engine* engine) {
+void m6_engine_create(
+        struct m6_engine_parameters* parameters, struct m6_engine* engine) {
+
     engine->pmem = malloc(M6_PMEM_SIZE);
     if(!engine->pmem) m6_fatal_errno("malloc");
     if(parameters->zero_pmem) memset(engine->pmem, 0, M6_PMEM_SIZE);
