@@ -1,5 +1,7 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2023 Emily "TTG" Banerjee <prs.ttg+matey6@pm.me>
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2023 Emily "TTG" Banerjee <prs.ttg+matey6@pm.me>
+ */
 
 #include "m6/arguments.h"
 
@@ -64,7 +66,7 @@ void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
             }
 
             case 'v': {
-                m6_verbose = true;
+                m6_verbose = M6_TRUE;
                 break;
             }
 
@@ -79,7 +81,7 @@ void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
             }
 
             case 'z': {
-                opts->zero_pmem = true;
+                opts->zero_pmem = M6_TRUE;
                 break;
             }
 
@@ -94,12 +96,12 @@ void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
             }
 
 			case 'E': {
-				unsigned long long vector = strtoull(optarg, NULL, 16);
-				if(vector == ULLONG_MAX) m6_fatal_errno("strtoull");
+				unsigned long vector = strtoul(optarg, NULL, 16);
+				if(vector == ULONG_MAX) m6_fatal_errno("strtoull");
 				if(vector > M6_UNSEGMENTED_MAX) {
                     m6_fatal_printf("reset vector out of acceptable range\n");
                 }
-				opts->overwrite_reset_vector = true;
+				opts->overwrite_reset_vector = M6_TRUE;
 				opts->reset_vector = vector;
 				break;
 			}

@@ -1,5 +1,7 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2023 Emily "TTG" Banerjee <prs.ttg+matey6@pm.me>
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2023 Emily "TTG" Banerjee <prs.ttg+matey6@pm.me>
+ */
 
 #ifndef M6_ENGINE_H
 #define M6_ENGINE_H
@@ -8,12 +10,12 @@
 
 struct m6_engine_parameters {
     enum m6_pmem_mode pmem_mode;
-    bool zero_pmem;
+    m6_bool_t zero_pmem;
 
     uint8_t* binary;
     size_t binary_size;
 
-	bool overwrite_reset_vector;
+	m6_bool_t overwrite_reset_vector;
 	m6_word_t reset_vector;
 };
 
@@ -30,6 +32,6 @@ struct m6_engine {
 
 void m6_engine_create(struct m6_engine_parameters* parameters, struct m6_engine* engine);
 void m6_engine_destroy(struct m6_engine* engine);
-bool m6_engine_tick(struct m6_engine* engine);
+m6_bool_t m6_engine_tick(struct m6_engine* engine);
 
 #endif

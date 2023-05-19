@@ -1,5 +1,7 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2023 Emily "TTG" Banerjee <prs.ttg+matey6@pm.me>
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2023 Emily "TTG" Banerjee <prs.ttg+matey6@pm.me>
+ */
 
 #ifndef M6_MACHINE_H
 #define M6_MACHINE_H
@@ -19,7 +21,7 @@ enum m6_pmem_mode {
     M6_HIGHER_HALF_BINARY
 };
 
-enum m6_regular_register_descriminator_16 {
+enum m6_regular_register_discriminator_16 {
     M6_AX,
     M6_CX,
     M6_DX,
@@ -32,7 +34,7 @@ enum m6_regular_register_descriminator_16 {
     M6_DI
 };
 
-enum m6_regular_register_descriminator_8 {
+enum m6_regular_register_discriminator_8 {
     M6_AL,
     M6_CL,
     M6_DL,
@@ -44,7 +46,7 @@ enum m6_regular_register_descriminator_8 {
     M6_BH
 };
 
-// NOTE: This MUST reflect the order of m6_register_descriminator_16
+/* NOTE: This MUST reflect the order of m6_register_discriminator_16 */
 struct m6_regular_registers_named_16 {
     m6_word_t ax;
     m6_word_t cx;
@@ -63,7 +65,7 @@ union m6_regular_registers {
 	struct m6_regular_registers_named_16 named;
 };
 
-enum m6_segment_register_descriminator {
+enum m6_segment_register_discriminator {
 	M6_ES,
 	M6_CS,
 	M6_SS,
@@ -125,8 +127,8 @@ enum m6_rm_register_address_disp16 {
 union m6_rm {
     uint8_t rm : 3;
 
-    enum m6_regular_register_descriminator_8 register8 : 3;
-    enum m6_regular_register_descriminator_16 register16 : 3;
+    enum m6_regular_register_discriminator_8 register8 : 3;
+    enum m6_regular_register_discriminator_16 register16 : 3;
 
     enum m6_rm_register_address register_address : 3;
     enum m6_rm_register_address_disp8 register_address_disp8 : 3;
@@ -134,21 +136,21 @@ union m6_rm {
 } M6_PACKED;
 
 struct m6_mod_rm_info {
-    uint8_t rm : 3; // union m6_rm
+    uint8_t rm : 3; /* union m6_rm */
     uint8_t reg : 3;
     enum m6_mod mod : 2;
 } M6_PACKED;
 
 struct m6_flags {
-    bool carry : 1;
-    bool parity : 1;
-    bool auxiliary_carry : 1;
-    bool zero : 1;
-    bool sign : 1;
-    bool overflow : 1;
-    bool interrupt_enable : 1;
-    bool direction : 1;
-    bool trap : 1;
+    m6_bool_t carry : 1;
+    m6_bool_t parity : 1;
+    m6_bool_t auxiliary_carry : 1;
+    m6_bool_t zero : 1;
+    m6_bool_t sign : 1;
+    m6_bool_t overflow : 1;
+    m6_bool_t interrupt_enable : 1;
+    m6_bool_t direction : 1;
+    m6_bool_t trap : 1;
 } M6_PACKED;
 
 #endif

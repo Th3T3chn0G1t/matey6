@@ -5,7 +5,7 @@ OBJECTS = $(SOURCES:.c=.o)
 OUT = src/matey6
 
 CFLAGS += -Iinclude -include m6/common.h
-CFLAGS += -std=c99 -Wall -Wextra -Werror -pedantic -pedantic-errors
+CFLAGS += -std=c89 -Wall -Wextra -Werror -ansi -pedantic -pedantic-errors
  # POSIX.1-2001 Needed for `getopt`
 CFLAGS += -D_POSIX_C_SOURCE=200112L
 CFLAGS += -DM6_VERSION=\"0.0.1\" $(M6_CFLAGS)

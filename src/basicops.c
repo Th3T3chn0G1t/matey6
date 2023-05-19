@@ -1,5 +1,7 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2023 Emily "TTG" Banerjee <prs.ttg+matey6@pm.me>
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2023 Emily "TTG" Banerjee <prs.ttg+matey6@pm.me>
+ */
 
 #include "m6/basicops.h"
 #include "m6/engine.h"
@@ -29,17 +31,18 @@ m6_word_t m6_basic_op_add(
      * Carry
      */
 
-    if(!result) engine->flags.zero = true;
+    if(!result) engine->flags.zero = M6_TRUE;
     return result;
 }
 
 m6_word_t m6_basic_op_or(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
-    engine->flags.overflow = false;
-    engine->flags.carry = false;
-
     m6_word_t result = 0;
+
+    engine->flags.overflow = M6_FALSE;
+    engine->flags.carry = M6_FALSE;
+
     result = a | b;
 
     /* TODO: Flags
@@ -48,7 +51,7 @@ m6_word_t m6_basic_op_or(
      * Parity
      */
 
-    if(!result) engine->flags.zero = true;
+    if(!result) engine->flags.zero = M6_TRUE;
     return result;
 }
 
@@ -56,7 +59,7 @@ m6_word_t m6_basic_op_adc(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
     m6_word_t result = 0;
-    result = a + b; // TODO: Carry?
+    result = a + b; /* TODO: Carry? */
 
     /* TODO: Flags
      * Overflow
@@ -66,7 +69,7 @@ m6_word_t m6_basic_op_adc(
      * Carry
      */
 
-    if(!result) engine->flags.zero = true;
+    if(!result) engine->flags.zero = M6_TRUE;
     return result;
 }
 
@@ -74,7 +77,7 @@ m6_word_t m6_basic_op_sbb(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
     m6_word_t result = 0;
-    result = a - b; // TODO: Borrow?
+    result = a - b; /* TODO: Borrow? */
 
     /* TODO: Flags
      * Overflow
@@ -84,17 +87,18 @@ m6_word_t m6_basic_op_sbb(
      * Carry
      */
 
-    if(!result) engine->flags.zero = true;
+    if(!result) engine->flags.zero = M6_TRUE;
     return result;
 }
 
 m6_word_t m6_basic_op_and(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
-    engine->flags.overflow = false;
-    engine->flags.carry = false;
-
     m6_word_t result = 0;
+
+    engine->flags.overflow = M6_FALSE;
+    engine->flags.carry = M6_FALSE;
+
     result = a & b;
 
     /* TODO: Flags
@@ -103,7 +107,7 @@ m6_word_t m6_basic_op_and(
      * Parity
      */
 
-    if(!result) engine->flags.zero = true;
+    if(!result) engine->flags.zero = M6_TRUE;
     return result;
 }
 
@@ -121,17 +125,18 @@ m6_word_t m6_basic_op_sub(
      * Carry
      */
 
-    if(!result) engine->flags.zero = true;
+    if(!result) engine->flags.zero = M6_TRUE;
     return result;
 }
 
 m6_word_t m6_basic_op_xor(
         struct m6_engine* engine, m6_word_t a, m6_word_t b) {
 
-    engine->flags.overflow = false;
-    engine->flags.carry = false;
-
     m6_word_t result = 0;
+
+    engine->flags.overflow = M6_FALSE;
+    engine->flags.carry = M6_FALSE;
+
     result = a ^ b;
 
     /* TODO: Flags
@@ -140,7 +145,7 @@ m6_word_t m6_basic_op_xor(
      * Parity
      */
 
-    if(!result) engine->flags.zero = true;
+    if(!result) engine->flags.zero = M6_TRUE;
     return result;
 }
 
@@ -158,6 +163,6 @@ m6_word_t m6_basic_op_cmp(
      * Carry
      */
 
-    if(!result) engine->flags.zero = true;
-    return a; // cmp does not affect its changes on machine state
+    if(!result) engine->flags.zero = M6_TRUE;
+    return a; /* cmp does not affect its changes on machine state */
 }

@@ -1,10 +1,10 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2023 Emily "TTG" Banerjee <prs.ttg+matey6@pm.me>
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2023 Emily "TTG" Banerjee <prs.ttg+matey6@pm.me>
+ */
 
 #ifndef M6_UTILS_H
 #define M6_UTILS_H
-
-extern bool m6_verbose;
 
 #if defined(__clang__) || defined(__GNUC__)
     #define M6_HAVE_GNU
@@ -33,6 +33,12 @@ extern bool m6_verbose;
 #ifndef M6_PRINTF
     #define M6_PRINTF(...)
 #endif
+
+typedef unsigned char m6_bool_t;
+#define M6_TRUE 1
+#define M6_FALSE 0
+
+extern m6_bool_t m6_verbose;
 
 void m6_fatal_errno(const char* msg);
 M6_PRINTF(1, 2) void m6_verbose_printf(const char* fmt, ...);
