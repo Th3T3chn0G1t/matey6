@@ -42,7 +42,7 @@ static void m6_print_version(void) {
 static enum m6_pmem_mode m6_process_pmem_mode(const char* mode_str) {
     if(!strcmp(mode_str, "higherhalf")) return M6_HIGHER_HALF_BINARY;
 
-    m6_fatal_printf("invalid memory layout type\n", stderr);
+    m6_fatal_printf("invalid memory layout type\n");
 }
 
 void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
@@ -97,7 +97,7 @@ void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
 				unsigned long long vector = strtoull(optarg, NULL, 16);
 				if(vector == ULLONG_MAX) m6_fatal_errno("strtoull");
 				if(vector > M6_UNSEGMENTED_MAX) {
-                    m6_fatal_printf("reset vector out of acceptable range");
+                    m6_fatal_printf("reset vector out of acceptable range\n");
                 }
 				opts->overwrite_reset_vector = true;
 				opts->reset_vector = vector;
