@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
     struct m6_engine engine = { 0 };
     m6_engine_create(&parameters, &engine);
 
-    m6_engine_tick(&engine);
+    while(m6_engine_tick(&engine)) continue;
 
     if(opts.dump) {
         FILE* dump = fopen("test.bin", "w+");

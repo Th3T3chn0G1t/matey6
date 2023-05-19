@@ -13,6 +13,7 @@
 
 typedef uint16_t m6_word_t;
 typedef m6_word_t m6_word_pair_t[2];
+typedef m6_word_t* m6_word_pointer_pair_t[2];
 
 enum m6_pmem_mode {
     M6_HIGHER_HALF_BINARY
@@ -136,7 +137,7 @@ struct m6_mod_rm_info {
     uint8_t rm : 3; // union m6_rm
     uint8_t reg : 3;
     enum m6_mod mod : 2;
-};
+} M6_PACKED;
 
 struct m6_flags {
     bool carry : 1;

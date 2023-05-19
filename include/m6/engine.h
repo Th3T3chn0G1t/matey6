@@ -30,6 +30,6 @@ struct m6_engine {
 
 void m6_engine_create(struct m6_engine_parameters* parameters, struct m6_engine* engine);
 void m6_engine_destroy(struct m6_engine* engine);
-void m6_engine_tick(struct m6_engine* engine);
+bool m6_engine_tick(struct m6_engine* engine);
 
 #endif

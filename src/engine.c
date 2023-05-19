@@ -59,12 +59,16 @@ void m6_engine_destroy(struct m6_engine* engine) {
     free(engine->pmem);
 }
 
+static uint32_t m6_engine_effective_address(m6_word_t base, m6_word_t offset) {
+    return ((base << 4) + offset);
+}
+
 static uint8_t m6_engine_segmented_read(
         struct m6_engine* engine,
         m6_word_t base, m6_word_t offset) {
 
     // TODO: There's something awry here % M6_PMEM_SIZE
-    uint32_t address = ((base << 4) + offset);
+    uint32_t address = m6_engine_effective_address(base, offset);
     uint8_t data = engine->pmem[address];
     printf("read %x @ %x [%x:%x]\n", data, address, base, offset);
     return data;
@@ -78,18 +82,17 @@ static uint8_t m6_engine_register_segmented_read(
     return m6_engine_segmented_read(engine, base, offset);
 }
 
-static void m6_engine_mod_rm_values(
-        struct m6_engine* engine,
-        bool wide, uint8_t mod_rm, m6_word_pair_t* values, m6_word_t disp) {
+static void m6_engine_mod_rm_pointers(
+    struct m6_engine* engine,
+    uint8_t mod_rm, m6_word_pointer_pair_t* pointers, m6_word_t disp) {
 
     (void) disp;
 
     struct m6_mod_rm_info mod_rm_info = *(struct m6_mod_rm_info*) &mod_rm;
     m6_word_t (*registers)[] = &engine->regular_registers.registers;
-    uint8_t rm_value = mod_rm_info.rm;
-    union m6_rm rm = { .rm = rm_value };
+    union m6_rm rm = { .rm = mod_rm_info.rm };
 
-    switch(mod_rm_info.mod) {
+    switch (mod_rm_info.mod) {
         case M6_REGISTER_ADDRESS: {
 
             break;
@@ -103,18 +106,8 @@ static void m6_engine_mod_rm_values(
             break;
         }
         case M6_REGISTER: {
-            (*values)[0] = (*registers)[mod_rm_info.reg];
-            (*values)[1] = (*registers)[rm.register16];
-
-            if(!wide) {
-                bool hi = rm.register8 >= M6_AH;
-
-                (*values)[0] >>= 8 * hi;
-                (*values)[0] &= 0xFF;
-
-                (*values)[1] >>= 8 * hi;
-                (*values)[1] &= 0xFF;
-            }
+            (*pointers)[0] = &(*registers)[mod_rm_info.reg];
+            (*pointers)[1] = &(*registers)[rm.register16];
             break;
         }
     }
@@ -128,15 +121,31 @@ static uint8_t m6_engine_do_basic_mod_rm_op(
     (void) op;
     uint8_t stride = 2;
 
-    m6_word_pair_t values;
-    m6_engine_mod_rm_values(engine, wide, mod_rm, &values, operands);
+    m6_word_pointer_pair_t pointers;
+    m6_engine_mod_rm_pointers(engine, mod_rm, &pointers, operands);
 
-//    m6_word_t result = m6_basic_ops_table[op](engine, values[0], values[1]);
+    m6_word_t a = *pointers[0];
+    m6_word_t b = *pointers[1];
+
+    struct m6_mod_rm_info mod_rm_info = *(struct m6_mod_rm_info*) &mod_rm;
+
+    if(!wide) {
+        a >>= 8 * (mod_rm_info.rm >= M6_AH);
+        a &= 0xFF;
+
+        if(mod_rm_info.mod == M6_REGISTER) {
+            b >>= 8 * (mod_rm_info.rm >= M6_AH);
+            b &= 0xFF;
+        }
+    }
+
+    // TODO: Only affect appropriate half of half operations
+    *pointers[0] = m6_basic_ops_table[op](engine, a, b);
 
     return stride;
 }
 
-static void m6_engine_process_top_level(struct m6_engine* engine) {
+static bool m6_engine_process_top_level(struct m6_engine* engine) {
     uint8_t byte = m6_engine_register_segmented_read(engine, M6_CS, engine->ip);
 
     uint8_t top = (byte & 0xF0) >> 4;
@@ -144,6 +153,10 @@ static void m6_engine_process_top_level(struct m6_engine* engine) {
     uint8_t bottom = byte & 0x3;
 
     uint8_t stride = 0;
+
+    // TODO: This is just a temporary fix to end ticking and not how hlt should
+    //       actually be handled
+    if(byte == 0xF4) return false;
 
     if(top <= 0xF) {
         uint8_t mod_rm = m6_engine_register_segmented_read(
@@ -161,15 +174,21 @@ static void m6_engine_process_top_level(struct m6_engine* engine) {
         if(!(middle & 1)) {
             stride = m6_engine_do_basic_mod_rm_op(
                     engine, bottom & 1, op, mod_rm, operands);
+
+            engine->ip += stride;
+            return true;
         }
     }
-
-    engine->ip += stride;
+    m6_fatal_printf(
+            "illegal instruction %x @ %x [%x:%x]",
+            byte, m6_engine_effective_address(
+                    engine->segment_registers.named.cs, engine->ip),
+            engine->segment_registers.named.cs, engine->ip);
 }
 
-void m6_engine_tick(struct m6_engine* engine) {
+bool m6_engine_tick(struct m6_engine* engine) {
     printf("ticking w/ IP %x\n", engine->ip);
-    m6_engine_process_top_level(engine);
+    bool result = m6_engine_process_top_level(engine);
     printf(
             "state at end of tick:\n"
             "ip %x\n\n"
@@ -194,4 +213,6 @@ void m6_engine_tick(struct m6_engine* engine) {
             engine->regular_registers.named.si,
             engine->regular_registers.named.di
     );
+
+    return result;
 }
