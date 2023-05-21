@@ -10,7 +10,7 @@ CFLAGS += -std=c89 -Wall -Wextra -Werror -ansi -pedantic -pedantic-errors
 CFLAGS += -D_POSIX_C_SOURCE=200112L
 CFLAGS += -DM6_VERSION=\"0.0.1\" $(M6_CFLAGS)
 
-PREFIX ?= /usr/local
+PREFIX = /usr/local
 
 .DEFAULT_GOAL := all
 .PHONY: all
