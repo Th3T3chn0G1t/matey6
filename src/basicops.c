@@ -7,14 +7,14 @@
 #include "m6/engine.h"
 
 const m6_basic_op_t m6_basic_ops_table[] = {
-        [M6_ADD] = m6_basic_op_add,
-        [M6_OR] = m6_basic_op_or,
-        [M6_ADC] = m6_basic_op_adc,
-        [M6_SBB] = m6_basic_op_sbb,
-        [M6_AND] = m6_basic_op_and,
-        [M6_SUB] = m6_basic_op_sub,
-        [M6_XOR] = m6_basic_op_xor,
-        [M6_CMP] = m6_basic_op_cmp
+        m6_basic_op_add,
+        m6_basic_op_or,
+        m6_basic_op_adc,
+        m6_basic_op_sbb,
+        m6_basic_op_and,
+        m6_basic_op_sub,
+        m6_basic_op_xor,
+        m6_basic_op_cmp
 };
 
 m6_word_t m6_basic_op_add(

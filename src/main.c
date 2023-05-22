@@ -67,4 +67,6 @@ int main(int argc, char** argv) {
 
     m6_engine_destroy(&engine);
     free(buffer);
+
+	return EXIT_SUCCESS;
 }

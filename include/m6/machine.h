@@ -124,33 +124,22 @@ enum m6_rm_register_address_disp16 {
     M6_ADDRESS_BX_DISP16
 };
 
-union m6_rm {
-    uint8_t rm : 3;
-
-    enum m6_regular_register_discriminator_8 register8 : 3;
-    enum m6_regular_register_discriminator_16 register16 : 3;
-
-    enum m6_rm_register_address register_address : 3;
-    enum m6_rm_register_address_disp8 register_address_disp8 : 3;
-    enum m6_rm_register_address_disp16 register_address_disp16 : 3;
-} M6_PACKED;
-
 struct m6_mod_rm_info {
-    uint8_t rm : 3; /* union m6_rm */
-    uint8_t reg : 3;
-    enum m6_mod mod : 2;
+	m6_ubitfield_t rm : 3;
+	m6_ubitfield_t reg : 3;
+	m6_ubitfield_t mod : 2; /* enum m6_mod */
 } M6_PACKED;
 
 struct m6_flags {
-    m6_bool_t carry : 1;
-    m6_bool_t parity : 1;
-    m6_bool_t auxiliary_carry : 1;
-    m6_bool_t zero : 1;
-    m6_bool_t sign : 1;
-    m6_bool_t overflow : 1;
-    m6_bool_t interrupt_enable : 1;
-    m6_bool_t direction : 1;
-    m6_bool_t trap : 1;
+	m6_ubitfield_t carry : 1;
+	m6_ubitfield_t parity : 1;
+	m6_ubitfield_t auxiliary_carry : 1;
+	m6_ubitfield_t zero : 1;
+	m6_ubitfield_t sign : 1;
+    m6_ubitfield_t overflow : 1;
+    m6_ubitfield_t interrupt_enable : 1;
+    m6_ubitfield_t direction : 1;
+    m6_ubitfield_t trap : 1;
 } M6_PACKED;
 
 #endif

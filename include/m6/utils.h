@@ -38,6 +38,9 @@ typedef unsigned char m6_bool_t;
 #define M6_TRUE 1
 #define M6_FALSE 0
 
+typedef unsigned int m6_ubitfield_t;
+typedef signed int m6_bitfield_t;
+
 extern m6_bool_t m6_verbose;
 
 void m6_fatal_errno(const char* msg);

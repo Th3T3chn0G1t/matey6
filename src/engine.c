@@ -14,11 +14,11 @@ void m6_engine_create(
         struct m6_engine_parameters* parameters, struct m6_engine* engine) {
 
     static const size_t placements[] = {
-            [M6_HIGHER_HALF_BINARY] = 0x8000
+            0x8000 /* M6_HIGHER_HALF_BINARY */
     };
 
     static const size_t size_constraints[] = {
-            [M6_HIGHER_HALF_BINARY] = 0x8000
+			0x8000 /* M6_HIGHER_HALF_BINARY */
     };
 
     size_t size = parameters->binary_size;
@@ -41,7 +41,7 @@ void m6_engine_create(
 
     if(size > constraint) {
         m6_fatal_printf(
-                "binary of size %zu exceeds memory mode maximum of %zu\n",
+                "binary of size %lu exceeds memory mode maximum of %lu\n",
                 size, constraint
         );
     }
@@ -99,8 +99,7 @@ static void m6_engine_mod_rm_pointers(
 
     struct m6_mod_rm_info mod_rm_info = *(struct m6_mod_rm_info*) &mod_rm;
     m6_word_t (*registers)[] = &engine->regular_registers.registers;
-    union m6_rm rm;
-    rm.rm = mod_rm_info.rm;
+    uint8_t rm = mod_rm_info.rm;
 
     (void) disp;
 
@@ -119,7 +118,7 @@ static void m6_engine_mod_rm_pointers(
         }
         case M6_REGISTER: {
             (*pointers)[0] = &(*registers)[mod_rm_info.reg];
-            (*pointers)[1] = &(*registers)[rm.register16];
+            (*pointers)[1] = &(*registers)[rm];
             break;
         }
     }
