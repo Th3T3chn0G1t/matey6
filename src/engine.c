@@ -98,13 +98,59 @@ static void m6_engine_mod_rm_pointers(
     uint8_t mod_rm, m6_word_pointer_pair_t* pointers, m6_word_t disp) {
 
     struct m6_mod_rm_info mod_rm_info = *(struct m6_mod_rm_info*) &mod_rm;
-    m6_word_t (*registers)[] = &engine->regular_registers.registers;
+	m6_word_t (*registers)[] = &engine->regular_registers.registers;
+	m6_word_t (*segment_registers)[] = &engine->regular_registers.registers;
     uint8_t rm = mod_rm_info.rm;
 
-    (void) disp;
+	m6_word_t offset = 0;
+	m6_word_t base = (*segment_registers)[M6_DS];
+	uint32_t effective = 0;
+
+	(*pointers)[0] = &(*registers)[mod_rm_info.reg];
 
     switch (mod_rm_info.mod) {
         case M6_REGISTER_ADDRESS: {
+			switch(rm) {
+				case M6_ADDRESS_BX_SI: {
+					offset = (*registers)[M6_BX] + (*registers)[M6_SI];
+					break;
+				}
+				case M6_ADDRESS_BX_DI: {
+					offset = (*registers)[M6_BX] + (*registers)[M6_DI];
+					break;
+				}
+				case M6_ADDRESS_BP_SI: {
+					offset = (*registers)[M6_BP] + (*registers)[M6_SI];
+					break;
+				}
+				case M6_ADDRESS_BP_DI: {
+					offset = (*registers)[M6_BP] + (*registers)[M6_DI];
+					break;
+				}
+				case M6_ADDRESS_SI: {
+					offset = (*registers)[M6_SI];
+					break;
+				}
+				case M6_ADDRESS_DI: {
+					offset = (*registers)[M6_DI];
+					break;
+				}
+				case M6_ADDRESS_DIRECT: {
+					offset = disp;
+					break;
+				}
+				case M6_ADDRESS_BX: {
+					offset = (*registers)[M6_BX];
+					break;
+				}
+			}
+
+			if(engine->segment_override != M6_SEGMENT_NONE) {
+				base = (*segment_registers)[engine->segment_override];
+			}
+
+			effective = m6_engine_effective_address(base, offset);
+			(*pointers)[1] = (m6_word_t*) &engine->pmem[effective];
 
             break;
         }
@@ -117,7 +163,6 @@ static void m6_engine_mod_rm_pointers(
             break;
         }
         case M6_REGISTER: {
-            (*pointers)[0] = &(*registers)[mod_rm_info.reg];
             (*pointers)[1] = &(*registers)[rm];
             break;
         }
@@ -203,6 +248,8 @@ static m6_bool_t m6_engine_process_top_level(struct m6_engine* engine) {
 
 m6_bool_t m6_engine_tick(struct m6_engine* engine) {
     m6_bool_t result = m6_engine_process_top_level(engine);
+
+	engine->segment_override = M6_SEGMENT_NONE;
 
     printf("ticking w/ IP %x\n", engine->ip);
     printf(

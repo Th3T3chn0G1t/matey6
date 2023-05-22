@@ -66,6 +66,8 @@ union m6_regular_registers {
 };
 
 enum m6_segment_register_discriminator {
+	M6_SEGMENT_NONE,
+
 	M6_ES,
 	M6_CS,
 	M6_SS,
