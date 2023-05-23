@@ -204,7 +204,8 @@ static uint8_t m6_engine_do_basic_mod_rm_op(
 }
 
 static m6_bool_t m6_engine_process_top_level(struct m6_engine* engine) {
-    uint8_t byte = m6_engine_register_segmented_read(engine, M6_CS, engine->ip);
+	m6_word_t ip = engine->ip;
+    uint8_t byte = m6_engine_register_segmented_read(engine, M6_CS, ip);
 
     uint8_t top = (byte & 0xF0) >> 4;
     uint8_t middle = (byte & 0xC) >> 2;
@@ -220,13 +221,13 @@ static m6_bool_t m6_engine_process_top_level(struct m6_engine* engine) {
 
     if(top <= 0xF) {
         uint8_t mod_rm = m6_engine_register_segmented_read(
-                engine, M6_CS, engine->ip + 1);
+                engine, M6_CS, ip + 1);
 
         uint8_t operand_0 = m6_engine_register_segmented_read(
-                engine, M6_CS, engine->ip + 2);
+                engine, M6_CS, ip + 2);
 
         uint8_t operand_1 = m6_engine_register_segmented_read(
-                engine, M6_CS, engine->ip + 3);
+                engine, M6_CS, ip + 3);
 
         uint16_t operands = operand_0 | (operand_1 << 8);
 

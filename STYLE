@@ -10,7 +10,7 @@
 - avoid function calls in `if` and `for` conditions
 - allow for single-line `if`, `for` and `while`
 - unbraced `if`, `for` and `while` only allowed on a single-line
-- always place opening brace on the same line as the construct it is attached to
+- always place opening brace on the same line as the construct it is attached
 - single line switch cases are not allowed and must always be braced
 - log strings are not capitalised
 - initializer braces should have internal spaces. i.e. `{ 0 }` not `{0}`
