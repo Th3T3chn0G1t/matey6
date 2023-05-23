@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
     if(opts.dump) {
         size_t written;
 
-        FILE* dump = fopen("test.bin", "w+");
+        FILE* dump = fopen(opts.dump, "w+");
         if(!dump) m6_fatal_errno("fopen");
 
         written = fwrite(
