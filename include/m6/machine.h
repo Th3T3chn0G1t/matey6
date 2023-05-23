@@ -46,6 +46,7 @@ enum m6_regular_register_discriminator_8 {
     M6_BH
 };
 
+#pragma pack(push, 1)
 /* NOTE: This MUST reflect the order of m6_register_discriminator_16 */
 struct m6_regular_registers_named_16 {
     m6_word_t ax;
@@ -58,7 +59,8 @@ struct m6_regular_registers_named_16 {
 
     m6_word_t si;
     m6_word_t di;
-} M6_PACKED;
+};
+#pragma pack(pop)
 
 union m6_regular_registers {
 	m6_word_t registers[M6_DI + 1];
@@ -74,12 +76,14 @@ enum m6_segment_register_discriminator {
 	M6_DS
 };
 
+#pragma pack(push, 1)
 struct m6_segment_registers_named {
 	m6_word_t es;
 	m6_word_t cs;
 	m6_word_t ss;
 	m6_word_t ds;
-} M6_PACKED;
+};
+#pragma pack(pop)
 
 union m6_segment_registers {
 	m6_word_t registers[M6_DS + 1];
@@ -126,12 +130,15 @@ enum m6_rm_register_address_disp16 {
     M6_ADDRESS_BX_DISP16
 };
 
+#pragma pack(push, 1)
 struct m6_mod_rm_info {
 	m6_ubitfield_t rm : 3;
 	m6_ubitfield_t reg : 3;
 	m6_ubitfield_t mod : 2; /* enum m6_mod */
-} M6_PACKED;
+};
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 struct m6_flags {
 	m6_ubitfield_t carry : 1;
 	m6_ubitfield_t parity : 1;
@@ -142,6 +149,7 @@ struct m6_flags {
     m6_ubitfield_t interrupt_enable : 1;
     m6_ubitfield_t direction : 1;
     m6_ubitfield_t trap : 1;
-} M6_PACKED;
+};
+#pragma pack(pop)
 
 #endif

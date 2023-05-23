@@ -32,7 +32,7 @@ void m6_engine_create(
     uint8_t reset_lo;
     uint8_t reset_hi;
 
-    engine->pmem = malloc(M6_PMEM_SIZE);
+    engine->pmem = (uint8_t*) malloc(M6_PMEM_SIZE);
     if(!engine->pmem) m6_fatal_errno("malloc");
     if(parameters->zero_pmem) memset(engine->pmem, 0, M6_PMEM_SIZE);
 
@@ -98,8 +98,8 @@ static void m6_engine_mod_rm_pointers(
     uint8_t mod_rm, m6_word_pointer_pair_t* pointers, m6_word_t disp) {
 
     struct m6_mod_rm_info mod_rm_info = *(struct m6_mod_rm_info*) &mod_rm;
-	m6_word_t (*registers)[] = &engine->regular_registers.registers;
-	m6_word_t (*segment_registers)[] = &engine->regular_registers.registers;
+	m6_word_t (*registers)[M6_DI + 1] = &engine->regular_registers.registers;
+	m6_word_t (*segment_registers)[M6_DS + 1] = &engine->segment_registers.registers;
     uint8_t rm = mod_rm_info.rm;
 
 	m6_word_t offset = 0;
@@ -231,7 +231,7 @@ static m6_bool_t m6_engine_process_top_level(struct m6_engine* engine) {
 
         uint16_t operands = operand_0 | (operand_1 << 8);
 
-        enum m6_basic_op_type op = (top << 1) + ((middle & 2) >> 1);
+        enum m6_basic_op_type op = (enum m6_basic_op_type) ((top << 1) + ((middle & 2) >> 1));
         if(!(middle & 1)) {
             stride = m6_engine_do_basic_mod_rm_op(
                     engine, bottom & 1, op, mod_rm, operands);

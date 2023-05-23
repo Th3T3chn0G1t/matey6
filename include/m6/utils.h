@@ -10,10 +10,11 @@
     #define M6_HAVE_GNU
 #endif
 
+#ifdef __WATCOMC__
+	#define M6_HAVE_WATCOM
+#endif
+
 #ifdef M6_HAVE_GNU
-    #if __has_attribute(packed)
-        #define M6_PACKED __attribute__((packed))
-    #endif
     #if __has_attribute(noreturn)
         #define M6_NORETURN __attribute__((noreturn))
     #endif
@@ -22,8 +23,8 @@
     #endif
 #endif
 
-#ifndef M6_PACKED
-    #define M6_PACKED
+#ifdef M6_HAVE_WATCOM
+	#define M6_NORETURN __declspec(aborts)
 #endif
 
 #ifndef M6_NORETURN

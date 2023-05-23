@@ -13,10 +13,15 @@ int main(int argc, char** argv) {
     uint8_t* buffer;
     size_t n;
 
-    struct m6_engine_parameters parameters = { 0 };
-    struct m6_engine engine = { 0 };
+    struct m6_engine_parameters parameters;
+    struct m6_engine engine;
 
-    struct m6_opts opts = { 0 };
+	struct m6_opts opts;
+
+	memset(&parameters, 0, sizeof(parameters));
+	memset(&engine, 0, sizeof(engine));
+	memset(&opts, 0, sizeof(opts));
+
     m6_parse_arguments(argc, argv, &opts);
 
     f = fopen(opts.binary, "r");
@@ -29,7 +34,7 @@ int main(int argc, char** argv) {
     if(pos == -1) m6_fatal_errno("ftell");
     rewind(f);
 
-    buffer = malloc(pos);
+    buffer = (uint8_t*) malloc(pos);
     if(!buffer) m6_fatal_errno("malloc");
 
     n = fread(buffer, sizeof(uint8_t), pos, f);
