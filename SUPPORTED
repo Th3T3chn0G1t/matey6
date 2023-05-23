@@ -1,0 +1,10 @@
+The following compilers have been tested:
+- GCC `gcc'
+- Clang `clang'
+- Tiny C Compiler `tcc'
+- Intel oneAPI C/C++ compilers `icx' `icx-cc'
+- ChibiCC `chibicc'
+
+The following environments have been tested:
+- Linux w/ glibc
+- macOSX
