@@ -93,7 +93,7 @@ static uint8_t m6_engine_register_segmented_read(
     return m6_engine_segmented_read(engine, base, offset);
 }
 
-static void m6_engine_mod_rm_pointers(
+static uint8_t m6_engine_mod_rm_pointers(
     struct m6_engine* engine,
     uint8_t mod_rm, m6_word_pointer_pair_t* pointers, m6_word_t disp) {
 
@@ -103,6 +103,8 @@ static void m6_engine_mod_rm_pointers(
             &engine->segment_registers.registers;
     uint8_t rm = mod_rm_info.rm;
 
+    uint8_t stride = 0;
+
 	m6_word_t offset = 0;
 	m6_word_t base = (*segment_registers)[M6_DS];
 	uint32_t effective = 0;
@@ -110,38 +112,59 @@ static void m6_engine_mod_rm_pointers(
 	(*pointers)[0] = &(*registers)[mod_rm_info.reg];
 
     switch (mod_rm_info.mod) {
+        case M6_REGISTER_ADDRESS_DISP8:
+            offset += disp & 0xFF;
+            stride = 1;
+            M6_FALLTHROUGH;
+            /* FALLTHRU */
+
+        case M6_REGISTER_ADDRESS_DISP16:
+            offset += disp;
+            stride = 2;
+            M6_FALLTHROUGH;
+            /* FALLTHRU */
+
         case M6_REGISTER_ADDRESS: {
-			switch(rm) {
+			switch((enum m6_rm_register_address) rm) {
 				case M6_ADDRESS_BX_SI: {
-					offset = (*registers)[M6_BX] + (*registers)[M6_SI];
+					offset += (*registers)[M6_BX] + (*registers)[M6_SI];
 					break;
 				}
 				case M6_ADDRESS_BX_DI: {
-					offset = (*registers)[M6_BX] + (*registers)[M6_DI];
+					offset += (*registers)[M6_BX] + (*registers)[M6_DI];
 					break;
 				}
 				case M6_ADDRESS_BP_SI: {
-					offset = (*registers)[M6_BP] + (*registers)[M6_SI];
+					offset += (*registers)[M6_BP] + (*registers)[M6_SI];
 					break;
 				}
 				case M6_ADDRESS_BP_DI: {
-					offset = (*registers)[M6_BP] + (*registers)[M6_DI];
+					offset += (*registers)[M6_BP] + (*registers)[M6_DI];
 					break;
 				}
 				case M6_ADDRESS_SI: {
-					offset = (*registers)[M6_SI];
+					offset += (*registers)[M6_SI];
 					break;
 				}
 				case M6_ADDRESS_DI: {
-					offset = (*registers)[M6_DI];
+					offset += (*registers)[M6_DI];
 					break;
 				}
 				case M6_ADDRESS_DIRECT: {
-					offset = disp;
+                    if(
+                            mod_rm_info.mod == M6_REGISTER_ADDRESS_DISP8 ||
+                            mod_rm_info.mod == M6_REGISTER_ADDRESS_DISP16
+                    ) {
+                        offset += (*registers)[M6_BP];
+                    }
+                    else {
+                        stride = 2;
+                        offset = disp;
+                    }
 					break;
 				}
 				case M6_ADDRESS_BX: {
-					offset = (*registers)[M6_BX];
+					offset += (*registers)[M6_BX];
 					break;
 				}
 			}
@@ -151,15 +174,11 @@ static void m6_engine_mod_rm_pointers(
 			}
 
 			effective = m6_engine_effective_address(base, offset);
+            /*
+             * TODO: Full r/w indirection
+             * or DMA w/ effective address spoofing?
+             */
 			(*pointers)[1] = (m6_word_t*) &engine->pmem[effective];
-
-            break;
-        }
-        case M6_REGISTER_ADDRESS_DISP8: {
-
-            break;
-        }
-        case M6_REGISTER_ADDRESS_DISP16: {
 
             break;
         }
@@ -168,6 +187,8 @@ static void m6_engine_mod_rm_pointers(
             break;
         }
     }
+
+    return stride;
 }
 
 static uint8_t m6_engine_do_basic_mod_rm_op(
@@ -183,7 +204,7 @@ static uint8_t m6_engine_do_basic_mod_rm_op(
 
     struct m6_mod_rm_info mod_rm_info = *(struct m6_mod_rm_info*) &mod_rm;
 
-    m6_engine_mod_rm_pointers(engine, mod_rm, &pointers, operands);
+    stride += m6_engine_mod_rm_pointers(engine, mod_rm, &pointers, operands);
 
     a = *pointers[0];
     b = *pointers[1];

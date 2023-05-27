@@ -21,6 +21,9 @@
     #if __has_attribute(format)
         #define M6_PRINTF(fmt, va) __attribute__((format(printf, fmt, va)))
     #endif
+    #if __has_attribute(fallthrough)
+        #define M6_FALLTHROUGH __attribute__((fallthrough))
+    #endif
 #endif
 
 #ifdef M6_HAVE_WATCOM
@@ -33,6 +36,10 @@
 
 #ifndef M6_PRINTF
     #define M6_PRINTF(...)
+#endif
+
+#ifndef M6_FALLTHROUGH
+    #define M6_FALLTHROUGH
 #endif
 
 typedef unsigned char m6_bool_t;
