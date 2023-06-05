@@ -55,6 +55,11 @@ void m6_parse_arguments(int argc, char** argv, struct m6_opts* opts) {
     while(result != -1) {
         result = getopt(argc, argv, options);
         switch(result) {
+            default:
+                (void) NULL;
+                M6_FALLTHROUGH;
+                /* FALLTHRU */
+
             case '?': {
                 m6_print_usage();
                 exit(EXIT_FAILURE);

@@ -32,9 +32,16 @@ void m6_engine_create(
     uint8_t reset_lo;
     uint8_t reset_hi;
 
-    engine->pmem = (uint8_t*) malloc(M6_PMEM_SIZE);
-    if(!engine->pmem) m6_fatal_errno("malloc");
-    if(parameters->zero_pmem) memset(engine->pmem, 0, M6_PMEM_SIZE);
+    if(parameters->zero_pmem) {
+        engine->pmem = (uint8_t*) calloc(M6_PMEM_SIZE, sizeof(uint8_t));
+    }
+    else {
+        engine->pmem = (uint8_t*) malloc(M6_PMEM_SIZE);
+    }
+
+    if(!engine->pmem) {
+        m6_fatal_errno(parameters->zero_pmem ? "calloc" : "malloc");
+    }
 
     pmem = engine->pmem;
     placement = pmem + placements[parameters->pmem_mode];
